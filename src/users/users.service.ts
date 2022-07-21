@@ -9,9 +9,8 @@ export class UsersService {
   }
 
   generateUser(
-    role: string,
     name: string,
-    nim: string,
+    email: string,
     password: string,
     confPassword: string,
   ) {
@@ -21,9 +20,8 @@ export class UsersService {
       );
     }
     this.user.push({
-      role,
       name,
-      nim,
+      email,
       password,
       confPassword,
     });
@@ -38,4 +36,5 @@ export class UsersService {
       throw new NotFoundException(`nim and password is not found`);
     }
   }
+
 }

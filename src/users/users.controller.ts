@@ -1,7 +1,7 @@
 import { Controller,Get,Post,Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 
-@Controller('users')
+@Controller('auth')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -12,16 +12,14 @@ export class UsersController {
 
   @Post('/register')
   generateUser(
-    @Body('role') role: string,
     @Body('name') name: string,
-    @Body('nim') nim: any,
+    @Body('email') email: any,
     @Body('password') password: any,
     @Body('confPassword') confPassword: any,
   ) {
     return this.userService.generateUser(
-      role,
       name,
-      nim,
+      email,
       password,
       confPassword,
     );
