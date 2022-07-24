@@ -8,10 +8,6 @@ export class UsersController {
 
   @Post('/register')
   async registerUser(@Body() payload: RegisterDto): Promise<void> {
-    try {
-      return this.userService.registerUser(payload);
-    } catch (e) {
-      console.log('error in controler => ' + e);
-    }
+    return this.userService.registerUser(payload);
   }
 }

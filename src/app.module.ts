@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global,Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
@@ -8,11 +8,13 @@ import { FormsModule } from './forms/forms.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig), 
     UsersModule, 
-    AuthModule, ClassesModule, 
+    AuthModule, 
+    ClassesModule, 
     FormsModule
   ], 
   controllers: [AppController],

@@ -52,4 +52,15 @@ export class UsersService {
       }
     }
   }
+
+ async validateUser(email: string, password: string): Promise<Users> {
+  const user = await this.users.findOne({ where: {
+    email: email,
+  }});
+
+  if (user && user.validatePassword(password)) {
+    return user;
+  }
+  return null;
+ }
 }
