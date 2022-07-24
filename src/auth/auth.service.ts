@@ -7,7 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenEntity } from './entity/auth.entity';
-import { LoginResponse } from './interface/login-response.interface.';
+import { LoginResponse } from './interface/login-response.interface';
 
 @Injectable()
 export class AuthService {
