@@ -12,6 +12,10 @@ export class UsersService {
     private users: Repository<Users>
   ) {}
   
+  async getAllUser(){
+    return await this.users.find()
+  }
+
   async registerUser(registerDto: RegisterDto): Promise<void> {
     const { name, email, id_class, password, confirm_password } = registerDto;
 
@@ -62,5 +66,11 @@ export class UsersService {
     return user;
   }
   return null;
+ }
+
+ async findOneById(id: string): Promise<Users> {
+  return await this.users.findOne({where: {
+    id: id
+  }});
  }
 }
