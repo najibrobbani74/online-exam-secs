@@ -2,22 +2,22 @@ import { Injectable, InternalServerErrorException, NotAcceptableException } from
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
-import { Users } from './entity/users.entity';
+import { UsersEntity } from './entity/users.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(Users) 
-    private users: Repository<Users>
+    @InjectRepository(UsersEntity) 
+    private usersEntity: Repository<UsersEntity>
   ) {}
   
   async getAllUser(){
-    return await this.users.find()
+    return await this.usersEntity.find()
   }
 
   async registerUser(registerDto: RegisterDto): Promise<void> {
-    const { name, email, id_class, password, confirm_password } = registerDto;
+    const { name, email, id_class, password, confirm_password, role } = registerDto;
 
     if (password.length <= 6) {
       throw new NotAcceptableException('password must contain at least 6 character');
@@ -39,15 +39,17 @@ export class UsersService {
       throw new NotAcceptableException('password and confirm password do not match');
     }
 
-    let user = this.users.create()
+    let user = this.usersEntity.create()
+    user.role = role;
     user.name = name;
     user.email = email;
     user.id_class = id_class;
+    user.refresh_token = 'user not logged in';
     user.salt = await bcrypt.genSalt()
     user.password = await bcrypt.hash(password, user.salt);
 
     try {
-      await this.users.save(user);
+      await this.usersEntity.save(user);
     } catch (e) {
       if (e.code == 23505) {
         throw new InternalServerErrorException('email already exist');
@@ -57,8 +59,8 @@ export class UsersService {
     }
   }
 
- async validateUser(email: string, password: string): Promise<Users> {
-  const user = await this.users.findOne({ where: {
+ async validateUser(email: string, password: string): Promise<UsersEntity> {
+  const user = await this.usersEntity.findOne({ where: {
     email: email,
   }});
 
@@ -68,9 +70,9 @@ export class UsersService {
   return null;
  }
 
- async findOneById(id: string): Promise<Users> {
-  return await this.users.findOne({where: {
-    id: id
+ async findOneById(uid: string): Promise<UsersEntity> {
+  return await this.usersEntity.findOne({where: {
+    uid: uid
   }});
  }
 }
