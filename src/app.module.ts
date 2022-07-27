@@ -1,22 +1,26 @@
-import { Global,Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ClassesModule } from './classes/classes.module';
+import { getEnvPath } from './common/helper/env.helper';
 import { FormsModule } from './forms/forms.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmConfig } from './config/typeorm.config';
+import { TypeOrmConfigService } from './shared/typeorm/typeorm.service';
+import { UsersModule } from './users/users.module';
 
-@Global()
+const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
+
 @Module({
   imports: [
-    TypeOrmModule.forRoot(typeOrmConfig), 
-    UsersModule, 
-    AuthModule, 
-    ClassesModule, 
-    FormsModule
-  ], 
+    ConfigModule.forRoot({ envFilePath, isGlobal: true }),
+    TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
+    AuthModule,
+    ClassesModule,
+    FormsModule,
+    UsersModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

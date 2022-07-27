@@ -1,21 +1,20 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
-import { GetUser } from 'src/auth/get-user.decorator';
-import { JwtGuard } from 'src/guard/jwt.guard';
-import { RegisterDto } from './dto/register.dto';
-import { UsersEntity } from './entity/users.entity';
+import { User } from '@/auth/entity/auth.entity';
+import { Controller, Inject, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  @Inject(UsersService)
+  private readonly service: UsersService;
+  @InjectRepository(User)
+  private readonly repository: Repository<User>;
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
-  @UseGuards(JwtGuard)
-  async getAllUser(@GetUser() user: UsersEntity) {
-    return this.userService.getAllUser();
-  }
-  @Post('/register')
-  async registerUser(@Body() payload: RegisterDto): Promise<void> {
-    return this.userService.registerUser(payload);
+  private findall(): Promise<User[]>{
+    return this.service.findAll();
   }
 }

@@ -1,10 +1,21 @@
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe())
-  await app.listen(3000);
+  const app: NestExpressApplication = await NestFactory.create(AppModule);
+  const config: ConfigService = app.get(ConfigService);
+  const port: number = config.get<number>('PORT');
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  //app.useGlobalGuards(AuthGuard('jwt')) (global guard for all port)
+
+  await app.listen(port, () => {
+    console.log('BACK END RUNNING ON =>', `http://localhost:${port}`);
+  });
 }
+
 bootstrap();

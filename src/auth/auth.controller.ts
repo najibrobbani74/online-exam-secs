@@ -1,20 +1,57 @@
-import { Body, Controller, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  Post,
+  ClassSerializerInterceptor,
+  UseInterceptors,
+  UseGuards,
+  Req,
+  HttpCode,
+  HttpStatus,
+  Delete,
+  Get,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { RefreshAccessTokenDto } from './dto/refresh-access-token.dto';
-import { LoginResponse } from './interface/login-response.interface';
+import { RegisterDto } from './dto/register.dto';
+import { Tokens } from './tokens/token-response.tokens';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {};
+  @Inject(AuthService)
+  private readonly authservice: AuthService;
 
-  @Post('/login')
-  async loginUser(@Body() loginDto: LoginDto): Promise<LoginResponse> {
-    return this.authService.loginUser(loginDto);
+  // final, no error
+  @Post('sign-up')
+  @HttpCode(HttpStatus.CREATED) //201
+  private signUp(@Body() body: RegisterDto): Promise<Tokens> {
+    return this.authservice.signUp(body);
   }
 
-  @Post('refresh-token')
-  async refreshAccessToken(@Body() refreshAccessTokenDto: RefreshAccessTokenDto): Promise<{ access_token: string}> {
-    return this.authService.refreshAccessToken(refreshAccessTokenDto);
+  // final, no error
+  @Post('/sign-in')
+  @HttpCode(HttpStatus.OK) //200
+  async signIn(@Body() body: LoginDto): Promise<Tokens> {
+    return this.authservice.signIn(body);
+  }
+
+  // final, no error
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('/sign-out')
+  @HttpCode(HttpStatus.OK) //200
+  async signOut(@Req() req: Request) {
+    const user = req.user;
+    return this.authservice.signOut(user['sub']);
+  }
+
+  @UseGuards(AuthGuard('jwt-refresh'))
+  @Post('/refresh-token')
+  @HttpCode(HttpStatus.OK) //200
+  async refreshToken(@Req() req: Request) {
+    const user = req.user;
+    return this.authservice.refreshToken(user['sub'], user['refreshToken']);
   }
 }
