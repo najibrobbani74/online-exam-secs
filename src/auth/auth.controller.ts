@@ -27,7 +27,7 @@ export class AuthController {
   // final, no error
   @Post('sign-up')
   @HttpCode(HttpStatus.CREATED) //201
-  private signUp(@Body() body: RegisterDto): Promise<Tokens> {
+  private signUp(@Body() body: RegisterDto): Promise<void> {
     return this.authservice.signUp(body);
   }
 

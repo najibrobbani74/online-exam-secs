@@ -24,7 +24,7 @@ export class AuthService {
   private readonly authRepository: AuthRepository;
 
   //sign up function(fix)
-  public async signUp(dto: RegisterDto): Promise<Tokens> {
+  public async signUp(dto: RegisterDto): Promise<void> {
     if (dto.password !== dto.confirm_password) {
       throw new NotAcceptableException(
         'password and confirm password is not valid',
@@ -51,10 +51,6 @@ export class AuthService {
     } catch (e) {
       if (e) throw new InternalServerErrorException('Error saving data, please refresh this page');
     }
-
-    const tokens = await this.authRepository.getToken(dto.email, user.uid);
-    await this.updateRt(user.uid, tokens.refresh_token);
-    return tokens;
   }
 
   // sign-in user (fix)
