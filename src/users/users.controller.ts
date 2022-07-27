@@ -1,5 +1,5 @@
 import { User } from '@/auth/entity/auth.entity';
-import { Controller, Inject, Get, UseGuards } from '@nestjs/common';
+import { Controller, Inject, Get, UseGuards, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,7 +14,7 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get()
-  private findall(): Promise<User[]>{
+  private findall(): Promise<User[]> {
     return this.service.findAll();
   }
 }
