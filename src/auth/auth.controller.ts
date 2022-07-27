@@ -3,15 +3,13 @@ import {
   Controller,
   Inject,
   Post,
-  ClassSerializerInterceptor,
-  UseInterceptors,
   UseGuards,
   Req,
   HttpCode,
   HttpStatus,
   Delete,
-  Get,
-} from '@nestjs/common';
+}
+from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { AuthService } from './auth.service';
@@ -47,6 +45,7 @@ export class AuthController {
     return this.authservice.signOut(user['sub']);
   }
 
+  // final, no error
   @UseGuards(AuthGuard('jwt-refresh'))
   @Post('/refresh-token')
   @HttpCode(HttpStatus.OK) //200

@@ -19,7 +19,7 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
     AuthModule,
     ClassesModule,
     FormsModule,
-    UsersModule
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

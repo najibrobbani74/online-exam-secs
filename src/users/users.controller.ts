@@ -1,5 +1,8 @@
+import { Roles } from '@/auth/decorator/roles.decorator';
 import { User } from '@/auth/entity/auth.entity';
-import { Controller, Inject, Get, UseGuards, Body } from '@nestjs/common';
+import { Role } from '@/auth/entity/role.enum';
+import { RolesGuard } from '@/auth/guard/user.guard';
+import { Controller, Inject, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,7 +15,8 @@ export class UsersController {
   @InjectRepository(User)
   private readonly repository: Repository<User>;
 
-  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.STUDENT, Role.ADMIN)
+  @UseGuards(AuthGuard('jwt-refresh'), RolesGuard)
   @Get()
   private findall(): Promise<User[]> {
     return this.service.findAll();

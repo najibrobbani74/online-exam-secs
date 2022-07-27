@@ -1,12 +1,13 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from './role.enum';
 
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public uid: string;
 
-  @Column({ nullable: true, default: null })
-  public role: string;
+  @Column({ type: 'varchar' })
+  public role: Role;
 
   @Column({ unique: true })
   public email: string;

@@ -1,14 +1,5 @@
-import {
-  Injectable,
-  HttpException,
-  HttpStatus,
-  UnauthorizedException,
-  Inject,
-} from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from '../entity/auth.entity';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from '../tokens/token-response.tokens';
 import { ConfigService } from '@nestjs/config';
@@ -33,13 +24,14 @@ export class AuthRepository {
   }
 
   // generator token rt and at
-  async getToken(email: string, uid: string): Promise<Tokens> {
+  async getToken(email: string, uid: string, role: string): Promise<Tokens> {
     const [at, rt] = await Promise.all([
       //access token 15 mins
       this.jwtservice.signAsync(
         {
           sub: uid,
           email: email,
+          role: role,
         },
         {
           secret: this.config.get<string>('JWT_KEY'),
@@ -51,6 +43,7 @@ export class AuthRepository {
         {
           sub: uid,
           email: email,
+          role: role,
         },
         {
           secret: this.config.get<string>('JWT_KEY'),

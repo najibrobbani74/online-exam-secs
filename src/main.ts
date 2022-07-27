@@ -11,7 +11,6 @@ async function bootstrap() {
   const port: number = config.get<number>('PORT');
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  //app.useGlobalGuards(AuthGuard('jwt')) (global guard for all port)
 
   await app.listen(port, () => {
     console.log('BACK END RUNNING ON =>', `http://localhost:${port}`);

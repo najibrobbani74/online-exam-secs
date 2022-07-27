@@ -5,7 +5,6 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
-  NotAcceptableException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,41 +14,68 @@ import { LoginDto } from './dto/login.dto';
 import { User } from './entity/auth.entity';
 import { AuthRepository } from './repository/auth.repository';
 import { Tokens } from './tokens/token-response.tokens';
+import { Role } from './entity/role.enum';
 
 @Injectable()
 export class AuthService {
   @InjectRepository(User)
-  private readonly repository: Repository<User>;
+  private repository: Repository<User>;
   @Inject(AuthRepository)
   private readonly authRepository: AuthRepository;
 
   //sign up function(fix)
   public async signUp(dto: RegisterDto): Promise<void> {
-    if (dto.password !== dto.confirm_password) {
-      throw new NotAcceptableException(
-        'password and confirm password is not valid',
-      );
-    }
-
     let user: User = await this.repository.findOne({
       where: { email: dto.email },
     });
-
     if (user) {
       throw new HttpException('Email already exist', HttpStatus.CONFLICT);
     }
 
+    if (dto.password.search(/^(?=.*[A-Z]).*$/)) {
+      throw new HttpException(
+        'password require at least one upper case',
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (dto.password.search(/^(?=.*[0-9]).*$/)) {
+      throw new HttpException(
+        'password require at least one number',
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (
+      dto.password.search(/^(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).*$/)
+    ) {
+      throw new HttpException(
+        'password require at least one special character',
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (dto.password !== dto.confirm_password) {
+      throw new HttpException(
+        'password and confirm password do not match',
+        HttpStatus.CONFLICT,
+      );
+    }
+
     user = new User();
+    const admin = 'admin@gmail.com';
+
+    if (dto.email === admin) user.role = Role.ADMIN;
+    else user.role = Role.STUDENT;
+
     user.name = dto.name;
     user.email = dto.email;
-    user.id_class = null;
-    user.role = null;
     user.password = this.authRepository.hashData(dto.password);
 
     try {
       await this.repository.save(user);
     } catch (e) {
-      if (e) throw new InternalServerErrorException('Error saving data, please refresh this page');
+      if (e)
+        throw new InternalServerErrorException(
+          'Error saving data, please refresh this page',
+        );
     }
   }
 
@@ -69,7 +95,11 @@ export class AuthService {
     if (!compare)
       throw new ForbiddenException('email and password is not found');
 
-    const tokens = await this.authRepository.getToken(user.email, user.uid);
+    const tokens = await this.authRepository.getToken(
+      user.email,
+      user.uid,
+      user.role,
+    );
     await this.updateRt(user.uid, tokens.refresh_token);
     return tokens;
   }
@@ -91,7 +121,11 @@ export class AuthService {
     const isValid = this.authRepository.compareHash(rt, user.refresh_token);
     if (!isValid) throw new UnauthorizedException('Access Denied');
 
-    const tokens = await this.authRepository.getToken(user.email, user.uid);
+    const tokens = await this.authRepository.getToken(
+      user.email,
+      user.uid,
+      user.role,
+    );
     await this.updateRt(user.uid, tokens.refresh_token);
     return tokens;
   }
