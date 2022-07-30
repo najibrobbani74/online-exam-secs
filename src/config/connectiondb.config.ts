@@ -5,13 +5,21 @@ import { Post } from "@/post/entity/post.entity"
 const dataSource = new DataSource(
     {
         type: "postgres",
-        host: "localhost",
+        host: "ec2-54-161-255-125.compute-1.amazonaws.com",
         port: 5432,
-        username: "postgres",
-        password: "najibrobbani74",
-        database: "online-exam-app",
+        username: "lrcerexfbelyle",
+        password: "f556de33f50a98ce95001ed61fc563cc018521d80498fdbe311bece026d550a0",
+        database: "dd96t00bn0rsmm",
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
+        // type: "postgres",
+        // host: "localhost",
+        // port: 5432,
+        // username: "postgres",
+        // password: "najibrobbani74",
+        // database: "online-exam-app",
+        // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        // synchronize: true,
     }
 )
 dataSource.initialize()
