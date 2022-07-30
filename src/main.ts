@@ -10,7 +10,7 @@ async function bootstrap() {
   const port: number = config.get<number>('PORT');
   app.useGlobalPipes(new ValidationPipe())
   await app.listen(port, () => {
-    console.log('BACK END RUNNING ON =>', `http://localhost:${port}`);
+    console.log('BACK END RUNNING ON =>', `https://online-exam-secs.herokuapp.com/`);
   });
 }
 bootstrap();
