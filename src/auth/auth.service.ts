@@ -5,6 +5,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,6 +16,7 @@ import { User } from './entity/auth.entity';
 import { AuthRepository } from './repository/auth.repository';
 import { Tokens } from './tokens/token-response.tokens';
 import { Role } from './entity/role.enum';
+import { classesRepository } from '@/config/connectiondb.config';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +26,7 @@ export class AuthService {
   private readonly authRepository: AuthRepository;
 
   //sign up function(fix)
-  public async signUp(dto: RegisterDto): Promise<void> {
+  public async signUp(dto: RegisterDto): Promise<any> {
     let user: User = await this.repository.findOne({
       where: { email: dto.email },
     });
@@ -69,8 +71,14 @@ export class AuthService {
     user.email = dto.email;
     user.password = this.authRepository.hashData(dto.password);
 
+    if ((await classesRepository.find({ where: { id: dto.id_class } })).length == 0) {
+      throw new NotFoundException("Class not found")
+    }
+    user.id_class = dto.id_class
+
     try {
       await this.repository.save(user);
+      return { berhasil: true }
     } catch (e) {
       if (e)
         throw new InternalServerErrorException(
@@ -107,6 +115,7 @@ export class AuthService {
   //sign-out user (fix)
   public async signOut(uid: string) {
     await this.repository.update(uid, { refresh_token: null });
+    return { berhasil: true }
   }
 
   //sign-out user (fix)
