@@ -1,6 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { User } from '@/auth/entity/auth.entity';
+import { Post } from '@/post/entity/post.entity';
+import { Classes } from '@/classes/entity/classes.entity';
+import { Forms } from '@/forms/entity/forms.entity';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -16,7 +20,10 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: "lrcerexfbelyle",
       password: "f556de33f50a98ce95001ed61fc563cc018521d80498fdbe311bece026d550a0",
       database: "dd96t00bn0rsmm",
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      entities: [
+        User, Classes, Forms, Post
+      ],
       extra: {
         ssl: {
           rejectUnauthorized: false

@@ -2,6 +2,7 @@ import { DataSource } from "typeorm"
 import { Classes } from "src/classes/entity/classes.entity"
 import { Forms } from "src/forms/entity/forms.entity"
 import { Post } from "@/post/entity/post.entity"
+import { User } from "@/auth/entity/auth.entity"
 const dataSource = new DataSource(
     {
         // url: "postgres://lrcerexfbelyle:f556de33f50a98ce95001ed61fc563cc018521d80498fdbe311bece026d550a0@ec2-54-161-255-125.compute-1.amazonaws.com:5432/dd96t00bn0rsmm",
@@ -11,7 +12,10 @@ const dataSource = new DataSource(
         username: "lrcerexfbelyle",
         password: "f556de33f50a98ce95001ed61fc563cc018521d80498fdbe311bece026d550a0",
         database: "dd96t00bn0rsmm",
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        entities: [
+            User, Classes, Forms, Post
+        ],
         extra: {
             ssl: {
                 rejectUnauthorized: false
