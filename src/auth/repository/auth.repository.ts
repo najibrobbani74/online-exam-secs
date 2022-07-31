@@ -34,7 +34,9 @@ export class AuthRepository {
           role: role,
         },
         {
-          secret: this.config.get<string>('JWT_KEY'),
+          // secret: this.config.get<string>('JWT_KEY'),
+          secret: "secretkey",
+
           expiresIn: 60 * 15,
         },
       ),
