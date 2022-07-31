@@ -2,7 +2,6 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { classesRepository } from 'src/config/connectiondb.config';
 import { CreateClassesDto } from './dto/create-classes.dto';
-import { baseUrl } from 'src/config/url.config';
 import { DeleteClassesDto } from './dto/delete-classes.dto';
 import { NotFoundException } from '@nestjs/common';
 import { UUIDValidationPipe } from './pipes/uuid-validation.pipe';
