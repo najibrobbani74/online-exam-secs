@@ -5,7 +5,7 @@ import { User } from '@/auth/entity/auth.entity';
 import { Post } from '@/post/entity/post.entity';
 import { Classes } from '@/classes/entity/classes.entity';
 import { Forms } from '@/forms/entity/forms.entity';
-
+import { DBHOST, DBNAME, DBPASSWORD, DBPORT, DBUSERNAME } from '@/config/all.config';
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   @Inject(ConfigService)
@@ -15,11 +15,11 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
     return {
       // url: "postgres://lrcerexfbelyle:f556de33f50a98ce95001ed61fc563cc018521d80498fdbe311bece026d550a0@ec2-54-161-255-125.compute-1.amazonaws.com:5432/dd96t00bn0rsmm",
       type: "postgres",
-      host: "ec2-54-161-255-125.compute-1.amazonaws.com",
-      port: 5432,
-      username: "lrcerexfbelyle",
-      password: "f556de33f50a98ce95001ed61fc563cc018521d80498fdbe311bece026d550a0",
-      database: "dd96t00bn0rsmm",
+      host: DBHOST,
+      port: DBPORT,
+      username: DBUSERNAME,
+      password: DBPASSWORD,
+      database: DBNAME,
       // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       entities: [
         User, Classes, Forms, Post
