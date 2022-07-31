@@ -16,14 +16,14 @@ import { PostModule } from './post/post.module';
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
 @Module({
-  // imports: [
-  //   ConfigModule.forRoot({ envFilePath, isGlobal: true }),
-  //   TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
-  //   UsersModule,
-  //   AuthModule,
-  //   ClassesModule, 
-  //   FormsModule, PostModule
-  // ], 
+  imports: [
+    ConfigModule.forRoot({ envFilePath, isGlobal: true }),
+    TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
+    UsersModule,
+    AuthModule,
+    ClassesModule,
+    FormsModule, PostModule
+  ], 
   controllers: [AppController],
   providers: [AppService],
 })

@@ -6,9 +6,9 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app: NestExpressApplication = await NestFactory.create(AppModule);
-  // const config: ConfigService = app.get(ConfigService);
-  // const port: number = config.get<number>('PORT');
-  // app.useGlobalPipes(new ValidationPipe())
+  const config: ConfigService = app.get(ConfigService);
+  const port: number = config.get<number>('PORT');
+  app.useGlobalPipes(new ValidationPipe())
   await app.listen(process.env.PORT || 3000, () => {
     console.log('BACK END RUNNING ON =>', `https://online-exam-secs.herokuapp.com/`);
   });
