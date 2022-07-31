@@ -1,1 +1,0 @@
-export const baseUrl = "https://online-exam-secs.herokuapp.com/"

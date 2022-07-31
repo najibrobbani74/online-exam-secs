@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from '../tokens/token-response.tokens';
 import { ConfigService } from '@nestjs/config';
+import { JWT_KEY } from '@/config/all.config';
 
 @Injectable()
 export class AuthRepository {
@@ -35,7 +36,7 @@ export class AuthRepository {
         },
         {
           // secret: this.config.get<string>('JWT_KEY'),
-          secret: "secretkey",
+          secret: JWT_KEY,
 
           expiresIn: 60 * 15,
         },
@@ -48,7 +49,7 @@ export class AuthRepository {
           role: role,
         },
         {
-          secret: "secretkey",
+          secret: JWT_KEY,
           // secret: this.config.get<string>('JWT_KEY'),
           expiresIn: 60 * 60 * 24 * 7,
         },

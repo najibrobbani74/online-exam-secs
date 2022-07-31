@@ -1,3 +1,4 @@
+import { JWT_KEY } from '@/config/all.config';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -13,7 +14,7 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(config: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: "secretkey"
+      secretOrKey: JWT_KEY
       // secretOrKey: config.get<string>('JWT_KEY'),
     });
   }
