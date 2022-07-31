@@ -64,16 +64,19 @@ export class AuthService {
     user = new User();
     const admin = 'admin@gmail.com';
 
-    if (dto.email === admin) user.role = Role.ADMIN;
-    else user.role = Role.STUDENT;
+    if (dto.email === admin) {
+      user.role = Role.ADMIN
+    } else {
+      user.role = Role.STUDENT
+      if ((await classesRepository.find({ where: { id: dto.id_class } })).length == 0) {
+        throw new NotFoundException("Class not found")
+      }
+    };
 
     user.name = dto.name;
     user.email = dto.email;
     user.password = this.authRepository.hashData(dto.password);
 
-    if ((await classesRepository.find({ where: { id: dto.id_class } })).length == 0) {
-      throw new NotFoundException("Class not found")
-    }
     user.id_class = dto.id_class
 
     try {
